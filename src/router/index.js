@@ -1,21 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import HomeView from '../views/HomeView.vue'
 import HomePage from '../views/HomePage.vue'
-
+import SideBar from '../views/SideBar.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    //redirect: "/homepage/:selected?",
-    component: HomeView,
-    props: true,
-  },
-  {
-    path: '/homepage',
     name: 'homepage',
     component: HomePage,
+  },
+  {
+    path: '/sidebar',
+    name: 'sidebar',
+    component: SideBar,
   },
 ]
 
