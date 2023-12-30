@@ -92,7 +92,6 @@
             </el-form-item>
           </el-col>
           <el-col span="12">
-
             <span>输入电影类型&nbsp;&nbsp;&nbsp;&nbsp;</span>
             <el-input
             v-model="inputType"
@@ -124,8 +123,6 @@
         </div>
     </div>
 
-
-    
   </template>
   
   <script setup>
@@ -143,71 +140,174 @@
   const showCards3 = ref(false);
 
   const cardData = ref([]);
-  const handleSelect = (index) => {
+
+
+  const handleSelect = async (index) => {
     activeIndex.value = index;
+    showCards1.value = false; 
+    showCards2.value = false; 
+    showCards3.value = false; 
+
     if (index === '1') {
-        performActorDirectorQuery();
+      if (radio.value === 1) {
+        await fetchMySQLData();
+      } else if (radio.value === 2) {
+        await fetchHiveData();
+      } else if (radio.value === 3) {
+        await fetchNeo4jData();
+      }
+      showCards1.value = true;
+      showCards2.value = false;
+      showCards3.value = false;
     } else if (index === '3') {
-        performActorCollaborationQuery();
-    } else if (index === '4'){
-        performPopularActorQuery();
+      showCards1.value = false;
+      showCards2.value = true;
+      showCards3.value = false;
+      if (radio.value === 1) {
+        await fetchMySQLData();
+      } else if (radio.value === 2) {
+        await fetchHiveData();
+      } else if (radio.value === 3) {
+        await fetchNeo4jData();
+      }
+    } else if (index === '4') {
+      showCards1.value = false;
+      showCards2.value = false;
+      showCards3.value = true;
+      if (radio.value === 1) {
+        await fetchMySQLData();
+      } else if (radio.value === 2) {
+        await fetchHiveData();
+      } else if (radio.value === 3) {
+        await fetchNeo4jData();
+      }
     }
   };
 
-  const performActorDirectorQuery = () => {
-    showCards2.value = false;
-    showCards3.value = false;
-    cardData.value = [
-        { director: '导演A', actor: '演员A', num:'5' },
-        { director: '导演B', actor: '演员B', num:'5' },
-        { director: '导演A', actor: '演员A', num:'5' },
-        { director: '导演B', actor: '演员B', num:'5' },
-        { director: '导演A', actor: '演员A', num:'5' },
-        { director: '导演B', actor: '演员B', num:'5' },
-        { director: '导演A', actor: '演员A', num:'5' },
-        { director: '导演B', actor: '演员B', num:'5' },
-        { director: '导演A', actor: '演员A', num:'5' },
-        { director: '导演B', actor: '演员B', num:'5' },
-        { director: '导演A', actor: '演员A', num:'5' },
-        { director: '导演B', actor: '演员B', num:'5' },
-    ];
-    showCards1.value = true;
+  const fetchMySQLData = async () => {
+    try {
+      const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/actor_director');
+      const responseData = await response.json();
+      console.log('fetchMySQLData:',responseData.relation);
+
+      showCards1.value = true;
+      cardData.value = [];
+      cardData.value = responseData.relation.map(item => ({
+        director: item.director,
+        actor: item.actor,
+        num: item.number.toString() // Convert to string if needed
+      }));
+      
+    } catch (error) {
+      console.error('Error fetching MySQL data:', error);
+    }
   };
 
-  const performActorCollaborationQuery = () => {
-    showCards1.value = false;
-    showCards3.value = false;
-    cardData.value = [
-        { actor1: '演员A', actor2: '演员A', num:'5' },
-        { actor1: '演员A', actor2: '演员A', num:'5' },
-        { actor1: '演员A', actor2: '演员A', num:'5' },
-        { actor1: '演员A', actor2: '演员A', num:'5' },
-        { actor1: '演员A', actor2: '演员A', num:'5' },
-        { actor1: '演员A', actor2: '演员A', num:'5' },
-        { actor1: '演员A', actor2: '演员A', num:'5' },
-        { actor1: '演员A', actor2: '演员A', num:'5' },
-    ];
-    showCards2.value = true;
+  const fetchHiveData = async () => {
+    try {
+      const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/actor_director');
+      const responseData = await response.json();
+      console.log('fetchHiveData:',responseData.relation);
+      
+      cardData.value = [];
+      cardData.value = responseData.relation.map(item => ({
+        director: item.director,
+        actor: item.actor,
+        num: item.number.toString() // Convert to string if needed
+      }));
+
+    } catch (error) {
+      console.error('Error fetching Hive data:', error);
+    }
   };
 
-  const performPopularActorQuery = () => {
-    showCards1.value = false;
-    showCards2.value = false;
-    cardData.value = [
-        { actor1: '演员A', actor2: '演员A' },
-        { actor1: '演员A', actor2: '演员A' },
-        { actor1: '演员A', actor2: '演员A' },
-        { actor1: '演员A', actor2: '演员A' },
-        { actor1: '演员A', actor2: '演员A' },
-        { actor1: '演员A', actor2: '演员A' },
-        { actor1: '演员A', actor2: '演员A' },
-        { actor1: '演员A', actor2: '演员A' },
-    ];
-    showCards3.value = true;
+  const fetchNeo4jData = async () => {
+    try {
+      const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/actor_director');
+      const responseData = await response.json();
+      console.log('fetchNeo4jData:',responseData.relation);
+      
+      cardData.value = [];
+      cardData.value = responseData.relation.map(item => ({
+        director: item.director,
+        actor: item.actor,
+        num: item.number.toString() // Convert to string if needed
+      }));
+    } catch (error) {
+      console.error('Error fetching Neo4j data:', error);
+    }
   };
+
   onMounted(() => {
-    performActorDirectorQuery(); // 初始化数据
+    fetchMySQLData();
   });
+
+  
+  // const handleSelect = (index) => {
+  //   activeIndex.value = index;
+  //   if (index === '1') {
+  //       performActorDirectorQuery();
+  //   } else if (index === '3') {
+  //       performActorCollaborationQuery();
+  //   } else if (index === '4'){
+  //       performPopularActorQuery();
+  //   }
+  // };
+
+  // const performActorDirectorQuery = () => {
+  //   showCards2.value = false;
+  //   showCards3.value = false;
+  //   cardData.value = [
+  //       { director: '导演A', actor: '演员A', num:'5' },
+  //       { director: '导演B', actor: '演员B', num:'5' },
+  //       { director: '导演A', actor: '演员A', num:'5' },
+  //       { director: '导演B', actor: '演员B', num:'5' },
+  //       { director: '导演A', actor: '演员A', num:'5' },
+  //       { director: '导演B', actor: '演员B', num:'5' },
+  //       { director: '导演A', actor: '演员A', num:'5' },
+  //       { director: '导演B', actor: '演员B', num:'5' },
+  //       { director: '导演A', actor: '演员A', num:'5' },
+  //       { director: '导演B', actor: '演员B', num:'5' },
+  //       { director: '导演A', actor: '演员A', num:'5' },
+  //       { director: '导演B', actor: '演员B', num:'5' },
+  //   ];
+  //   showCards1.value = true;
+  // };
+
+  // const performActorCollaborationQuery = () => {
+  //   showCards1.value = false;
+  //   showCards3.value = false;
+  //   cardData.value = [
+  //       { actor1: '演员A', actor2: '演员A', num:'5' },
+  //       { actor1: '演员A', actor2: '演员A', num:'5' },
+  //       { actor1: '演员A', actor2: '演员A', num:'5' },
+  //       { actor1: '演员A', actor2: '演员A', num:'5' },
+  //       { actor1: '演员A', actor2: '演员A', num:'5' },
+  //       { actor1: '演员A', actor2: '演员A', num:'5' },
+  //       { actor1: '演员A', actor2: '演员A', num:'5' },
+  //       { actor1: '演员A', actor2: '演员A', num:'5' },
+  //   ];
+  //   showCards2.value = true;
+  // };
+
+  // const performPopularActorQuery = () => {
+  //   showCards1.value = false;
+  //   showCards2.value = false;
+  //   cardData.value = [
+  //       { actor1: '演员A', actor2: '演员A' },
+  //       { actor1: '演员A', actor2: '演员A' },
+  //       { actor1: '演员A', actor2: '演员A' },
+  //       { actor1: '演员A', actor2: '演员A' },
+  //       { actor1: '演员A', actor2: '演员A' },
+  //       { actor1: '演员A', actor2: '演员A' },
+  //       { actor1: '演员A', actor2: '演员A' },
+  //       { actor1: '演员A', actor2: '演员A' },
+  //   ];
+  //   showCards3.value = true;
+  // };
+  // onMounted(() => {
+  //   performActorDirectorQuery(); // 初始化数据
+  // });
 
   
   </script>
@@ -229,10 +329,7 @@
     width: 100%;
   }
   .input{
-    /* margin-bottom:1%; */
-    /* margin-top:2%; */
     width:50%!important;
-    /* margin-right: 23%; */
   }
 
   </style>

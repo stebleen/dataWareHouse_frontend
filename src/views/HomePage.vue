@@ -8,6 +8,9 @@
       <RunTime v-if="selectedComponent === 'RunTime'" />
       <RelationQuery v-if="selectedComponent === 'RelationQuery'" />
       <TraceQuery v-if="selectedComponent === 'TraceQuery'" />
+      <DirectorActor v-if="selectedComponent === 'DirectorActor'" />
+      <ActorsQuery v-if="selectedComponent === 'ActorsQuery'" />
+      <FocusActors v-if="selectedComponent === 'FocusActors'" />
     </el-main>
   </el-container>
 </template>
@@ -19,6 +22,9 @@ import RunTime from './RunTime.vue'
 import SideBar from './SideBar.vue'
 import TraceQuery from './TraceQuery.vue'
 import RelationQuery from './RelationQuery.vue'
+import DirectorActor from './DirectorActor.vue'
+import ActorsQuery from './ActorsQuery.vue'
+import FocusActors from './FocusActors.vue'
 
 const selectedComponent = ref('')
 
@@ -29,6 +35,12 @@ const handleMenuSelect = (param) => {
     selectedComponent.value = 'MovieQuery'
   } else if (item === '1-2') {
     selectedComponent.value = 'RelationQuery'
+  } else if (item === '1-3') {
+    selectedComponent.value = 'DirectorActor'
+  } else if (item === '1-4') {
+    selectedComponent.value = 'ActorsQuery'
+  } else if (item === '1-5') {
+    selectedComponent.value = 'FocusActors'
   } else if (item === '2') {
     selectedComponent.value = 'TraceQuery'
   } else if (item === '3') {

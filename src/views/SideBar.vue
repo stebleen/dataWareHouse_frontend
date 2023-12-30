@@ -18,9 +18,21 @@
                     <el-icon><icon-menu /></el-icon>
                     <span>电影查询</span>
                 </el-menu-item>
-                <el-menu-item index="1-2">
+                <!-- <el-menu-item index="1-2">
                     <el-icon><icon-menu /></el-icon>
                     <span>关系查询</span>
+                </el-menu-item> -->
+                <el-menu-item index="1-3">
+                    <el-icon><icon-menu /></el-icon>
+                    <span>经常合作的导演和演员</span>
+                </el-menu-item>
+                <el-menu-item index="1-4">
+                    <el-icon><icon-menu /></el-icon>
+                    <span>经常合作的演员组合</span>
+                </el-menu-item>
+                <el-menu-item index="1-5">
+                    <el-icon><icon-menu /></el-icon>
+                    <span>最受关注的演员组合</span>
                 </el-menu-item>
             </el-menu-item-group>
         </el-sub-menu>
