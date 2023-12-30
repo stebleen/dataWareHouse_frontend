@@ -1,20 +1,13 @@
 <template>
     <div style="height: 100vh;"> 
       <el-row style="height: 100%;"> 
-        <el-col :span="10">
+        <el-col :span="12">
           <div class="grid-content ep-bg-purple" style="height: 100%;">
             <el-card style="width: 90%;">
-            <el-form-item class="database">
-              <el-radio-group v-model="radio" >
-                <el-radio :label="1">MySQL</el-radio>
-                <el-radio :label="2">Hive</el-radio>
-                <el-radio :label="3">Neo4j</el-radio>
-              </el-radio-group>
-            </el-form-item>
             <el-form-item class="movie-row"> 
                 <span class="text-gray-600 inline-flex items-center" style="margin-right: 15px;">电影名称</span>
                 <el-input
-                v-model="form.title"
+                v-model="form.movieName"
                 class="small-input"
                 placeholder="Type something"
                 :prefix-icon="Search"
@@ -51,15 +44,7 @@
                 :prefix-icon="Search"
                 />
             </el-form-item>
-            <el-form-item class="movie-row"> 
-                <span class="text-gray-600 inline-flex items-center" style="margin-right: 15px;">主演名字</span>
-                <el-input
-                v-model="form.starring"
-                class="small-input"
-                placeholder="Type something"
-                :prefix-icon="Search"
-                />
-            </el-form-item>
+
             <el-form-item class="movie-row"> 
                 <span class="text-gray-600 inline-flex items-center" style="margin-right: 15px;">导演名字</span>
                 <el-input
@@ -71,9 +56,7 @@
             </el-form-item>
             <el-form-item class="comment-row">
                 <span class="text-gray-600 inline-flex items-center" style="margin-right: 15px;">正面评价</span>
-                <div class="slider-demo-block">
-                    <el-slider v-model="form.positive" show-input />
-                </div>
+                <el-switch v-model="form.positive" />
             </el-form-item>
 
             <el-form-item class="comment-row">
@@ -105,72 +88,271 @@
           </div>
         </el-col>
         <div class="vertical-line"></div> 
-        <el-col :span="14">
-          <div class="grid-content ep-bg-purple-light" style="height: 100%;">
-            <p>一共有{{ movieNumber }}个查询结果</p>
-            <el-table :data="tableData" stripe style="width: 100%">
-              <el-table-column prop="id" label="电影ID" width="180" />
-              <el-table-column prop="title" label="电影名" width="180" />
-              <el-table-column prop="version" label="电影版本" width="180" />
-              <el-table-column prop="date" label="上映日期" width="180" />
-            </el-table>
-            
-          </div>
+        <el-col :span="12">
+          <el-tabs type="border-card">
+            <el-tab-pane label="MySQL">
+              <div class="grid-content ep-bg-purple-light" style="height: 100%;">
+                <p>一共有{{ numberMySQL }}个查询结果</p>
+                <el-table :data="MySQLData" stripe style="width: 100%">
+                  <el-table-column prop="movieName" label="电影名" width="180" />
+                  <el-table-column prop="format" label="电影版本" width="180" />
+                  <el-table-column prop="comment_num" label="评论数量" width="180" />
+                  <el-table-column prop="time" label="上映日期" width="180" />
+                </el-table>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="Hive">
+              <div class="grid-content ep-bg-purple-light" style="height: 100%;">
+                <p>一共有{{ numberHive }}个查询结果</p>
+                <el-table :data="HiveData" stripe style="width: 100%">
+                  <el-table-column prop="movieName" label="电影名" width="180" />
+                  <el-table-column prop="format" label="电影版本" width="180" />
+                  <el-table-column prop="comment_num" label="评论数量" width="180" />
+                  <el-table-column prop="time" label="上映日期" width="180" />
+                </el-table>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="Neo4j">
+              <div class="grid-content ep-bg-purple-light" style="height: 100%;">
+                <p>一共有{{ numberNeo4j }}个查询结果</p>
+                <el-table :data="Neo4jData" stripe style="width: 100%">
+                  <el-table-column prop="movieName" label="电影名" width="180" />
+                  <el-table-column prop="format" label="电影版本" width="180" />
+                  <el-table-column prop="comment_num" label="评论数量" width="180" />
+                  <el-table-column prop="time" label="上映日期" width="180" />
+                </el-table>
+              </div>
+            </el-tab-pane>
+          </el-tabs>
+
+          <div ref="chartContainer" style="width: 100%; height: 400px;" class="chart"></div>
+          
         </el-col>
       </el-row>
     </div>
   </template>
 
   <script setup>
-  import { ref
-    // , onMounted 
-  } from 'vue';
-  import { 
-    // Calendar, 
-    Search } from '@element-plus/icons-vue';
+  import { ref, onMounted, watch } from 'vue';
+  import { Search } from '@element-plus/icons-vue';
+  import * as echarts from 'echarts';
 
-
-
-  const radio = ref(1);
 
   const form = ref({
-    title: '',
-    version: '',
+    movieName: '',
+    format: '',
     delivery: false,
     type: [],
     resource: '',
     desc: '',
     category: '',
     radio:'',
-    // movieDirectors: [],
-    // movieMainActors: [],
-    // movieActors: [],
     actor: '',
     starring: '',
     director: '',
     movieMinScore: 0,
     movieMaxScore: 5.0,
     movieDate: [],
-    positive: 0
+    positive: '',
   });
 
-  const movieNumber=ref(0);
+  const numberMySQL=ref(0);
+  const numberNeo4j=ref(0);
+  const numberHive=ref(0);
 
-  const tableData = [
-    { id: 1, title: '电影A', version: '1.0', date: '2023-01-15' },
-    { id: 2, title: '电影B', version: '2.0', date: '2023-02-20' },
-    { id: 3, title: '电影C', version: '1.5', date: '2023-03-10' },
-    { id: 4, title: '电影D', version: '3.0', date: '2023-04-05' },
-    { id: 5, title: '电影E', version: '2.5', date: '2023-05-18' },
-  ];
+  const timeMySQL=ref(0);
+  const timeNeo4j=ref(0);
+  const timeHive=ref(0);
+
+  const Neo4jData = ref([]);
+  const MySQLData = ref([]);
+  const HiveData = ref([]);
+
+  const searchAllDatabases = async () => {
+    try {
+      // 发送 Neo4j 请求
+      const neo4jResponse = await fetchNeo4jData(); 
+      console.log('neo4jResponse.response',neo4jResponse.response)
+      Neo4jData.value = neo4jResponse.response.movies;
+      numberNeo4j.value = neo4jResponse.response.movieNum;
+      timeNeo4j.value = neo4jResponse.response.time;
+
+      // 发送 MySQL 请求
+      const mysqlResponse = await fetchMySQLData(); 
+      console.log('mysqlResponse.response',mysqlResponse.response)
+      MySQLData.value = mysqlResponse.response.movies;
+      numberMySQL.value = mysqlResponse.response.movieNum;
+      timeMySQL.value = mysqlResponse.response.time;
+
+      // 发送 Hive 请求
+      const hiveResponse = await fetchHiveData(); 
+      console.log('hiveResponse.response',hiveResponse.response)
+      HiveData.value = hiveResponse.response.movies;
+      numberHive.value = hiveResponse.response.movieNum;
+      timeHive.value = hiveResponse.response.time;
 
 
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  const fetchNeo4jData = async () => {
+    const requestBody = {
+      movieInfo: {
+        movieName: form.value. movieName,
+        category: form.value.category,
+        date: form.value.movieDate,
+        directorNames: form.value.director,
+        actors: form.value.actor,
+        positive: form.value.positive,
+        minScore: form.value.movieMinScore,
+        maxScore: form.value.movieMaxScore,
+      }
+    };
+
+    // 发送 Neo4j 请求
+    const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/match', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    return await response.json();
+  };
+
+
+  const fetchMySQLData = async () => {
+    const requestBody = {
+      movieInfo: {
+        movieName: form.value. movieName,
+        category: form.value.category,
+        date: form.value.movieDate,
+        directorNames: form.value.director,
+        actors: form.value.actor,
+        positive: form.value.positive,
+        minScore: form.value.movieMinScore,
+        maxScore: form.value.movieMaxScore,
+      }
+    };
+
+    // 发送 Neo4j 请求
+    const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/match', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    return await response.json();
+  };
+
+  const fetchHiveData = async () => {
+    const requestBody = {
+      movieInfo: {
+        movieName: form.value. movieName,
+        category: form.value.category,
+        date: form.value.movieDate,
+        directorNames: form.value.director,
+        actors: form.value.actor,
+        positive: form.value.positive,
+        minScore: form.value.movieMinScore,
+        maxScore: form.value.movieMaxScore,
+      }
+    };
+
+    // 发送 Neo4j 请求
+    const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/match', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    return await response.json();
+  };
+
+  // 在 searchMovie 函数中调用 searchAllDatabases 来查询三个数据库
+  const searchMovie = async () => {
+    await searchAllDatabases();
+  };
+
+  console.log('timeMySQL',timeMySQL.value);
+
+
+  const chartContainer = ref(null);
+
+  const chart = ref(null);
+
+  // 监听 timeMySQL、timeNeo4j 和 timeHive 的变化
+  watch([timeMySQL, timeNeo4j, timeHive], ([timeMySQLValue, timeNeo4jValue, timeHiveValue]) => {
+    // 更新图表数据
+    chart.value.setOption({
+      series: [
+        {
+          data: [timeMySQLValue, timeHiveValue, timeNeo4jValue]
+        }
+      ]
+    });
+  });
+
+  onMounted(() => {
+    chart.value = echarts.init(chartContainer.value);
+    chart.value.setOption(option);
+  });
+
+  const option = {
+    title: {
+      text: '不同数据库查询时间',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 'bold'
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: ['MySQL', 'Hive', 'Neo4j']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [
+      {
+        data: [timeMySQL.value, timeHive.value, timeNeo4j.value],
+        type: 'bar',
+        itemStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              {
+                offset: 0, color: '#C23531' // 条形图起点颜色
+              },
+              {
+                offset: 1, color: '#2F4554' // 条形图终点颜色
+              }
+            ]
+          }
+        }
+      }
+    ]
+  };
 
 
   </script>
 
 <style>
+.left-align {
+  display: flex;
+  align-items: flex-start;
+}
 .movie-row {
   display: flex;
   align-items: center;
@@ -185,13 +367,13 @@
   width: 1px; 
   height: 100%; 
   background-color: #a19f9f;
-  left: 40%; 
+  left: 48%; 
   top: 0; 
   transform: translateX(-50%); 
 }
-/* .block{
-  width: 50%;
-} */
+.chart {
+  margin-top:5%;
+}
 
 .slider-demo-block {
   display: flex;
@@ -208,7 +390,7 @@
   margin-top:10%;
 }
 .comment-row{
-  margin-top: 7%;
+  margin-top: 5%;
 }
 
 </style>
