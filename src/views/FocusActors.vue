@@ -55,7 +55,7 @@ const fetchMySQLData = async (category) => {
         const queryParams = new URLSearchParams();
         queryParams.append('category', category);
 
-        const response = await fetch(`https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/high_heat_actors?${queryParams.toString()}`);
+        const response = await fetch(`https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/high_heat_actors?apifoxApiId=137819497`);
 
         const responseData = await response.json();
         console.log('fetchMySQLData:',responseData.relation);
@@ -72,7 +72,9 @@ const fetchHiveData = async (category) => {
         const queryParams = new URLSearchParams();
         queryParams.append('category', category);
 
-        const response = await fetch(`https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/high_heat_actors?${queryParams.toString()}`);
+        // const response = await fetch(`https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/high_heat_actors?${queryParams.toString()}`);
+
+        const response = await fetch(`https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/high_heat_actors?apifoxApiId=137819497`);
 
         const responseData = await response.json();
         console.log('fetchHiveData:',responseData.relation);
@@ -89,7 +91,10 @@ const fetchNeo4jData = async (category) => {
         const queryParams = new URLSearchParams();
         queryParams.append('category', category);
 
-        const response = await fetch(`https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/high_heat_actors?${queryParams.toString()}`);
+        // const response = await fetch(`https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/high_heat_actors?${queryParams.toString()}`);
+
+        const response = await fetch(`https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/high_heat_actors?apifoxApiId=137819497`);
+
 
         const responseData = await response.json();
         console.log('fetchNeo4jData:',responseData.relation);

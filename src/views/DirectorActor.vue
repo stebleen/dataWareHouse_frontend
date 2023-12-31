@@ -36,7 +36,7 @@ const Neo4jData = ref([]);
 
 const fetchMySQLData = async () => {
     try {
-      const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/actor_director');
+      const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/actor_director?apifoxApiId=137819481');
       const responseData = await response.json();
       console.log('fetchMySQLData:',responseData.relation);
 
@@ -49,7 +49,7 @@ const fetchMySQLData = async () => {
 
 const fetchHiveData = async () => {
     try {
-      const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/actor_director');
+      const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/actor_director?apifoxApiId=137819481');
       const responseData = await response.json();
       console.log('fetchHiveData:',responseData.relation);
 
@@ -62,7 +62,7 @@ const fetchHiveData = async () => {
 
 const fetchNeo4jData = async () => {
     try {
-      const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/actor_director');
+      const response = await fetch('https://mock.apifox.com/m1/3838210-0-default/neo4j/cooperation/actor_director?apifoxApiId=137819481');
       const responseData = await response.json();
       console.log('fetchNeo4jData:',responseData.relation);
 
