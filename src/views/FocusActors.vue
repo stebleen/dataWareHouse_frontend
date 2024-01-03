@@ -1,11 +1,18 @@
 <template>
     <el-tabs type="border-card">
         <div class="input">
-            <el-input v-model="inputType" placeholder="Please Input Movie Type" :prefix-icon="Search">
-                <template #append>
-                <span>输入电影类型</span>
-                </template>
-            </el-input>
+            <el-row>
+                <el-col span="12">
+                    <el-input v-model="inputType" placeholder="Please Input Movie Type" :prefix-icon="Search">
+                        <!-- <template #append>
+                        <span>输入电影类型</span>
+                        </template> -->
+                    </el-input>
+                </el-col>
+                <el-col span="12">
+                    <el-button class="type-button" @click="searchType">查询</el-button>
+                </el-col>
+            </el-row>
         </div>
         <h1>MySQL</h1>
         <!-- <el-tab-pane label="MySQL"> -->
@@ -35,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch } from 'vue'
+import { ref, onMounted, nextTick} from 'vue'
 import { Search } from '@element-plus/icons-vue'
 
 const inputType = ref('');
@@ -44,11 +51,12 @@ const MySQLData = ref([]);
 const HiveData = ref([]);
 const Neo4jData = ref([]);
 
-watch(inputType, async (newVal) => {
-  await fetchMySQLData(newVal);
-  await fetchHiveData(newVal);
-  await fetchNeo4jData(newVal);
-}); 
+const searchType = () =>{
+    console.log('input',inputType.value);
+    fetchHiveData(inputType.value);
+    fetchMySQLData(inputType.value);
+    fetchNeo4jData(inputType.value);
+}
 
 const fetchMySQLData = async (category) => {
     try {
